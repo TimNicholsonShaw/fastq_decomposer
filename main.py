@@ -29,20 +29,20 @@ if __name__=="__main__":
     sheet = xlrd.open_workbook(manifestLoc).sheet_by_index(0)
     for i in range(header,sheet.nrows):
         manifest.append([sheet.cell_value(i,0),sheet.cell_value(i,2).rstrip() + sheet.cell_value(i,3).rstrip()])
-    print(manifest)
+
     r1 = list(SeqIO.parse(gzip.open(r1Loc,'rt'),'fastq'))
     r2= list(SeqIO.parse(gzip.open(r2Loc,'rt'),'fastq'))
-    print(r1Loc, r2Loc)
     assert len(r1) == len(r2)
 
     for line in manifest:
         r1_out = []
         r2_out = []
         name = line[0]
-        barcode = line[1].rstrip()[:-2]
-        for i in range(len(r1)):
-            read = r1[i].seq
-            if read[:len(barcode)].startswith(barcode):
+        barcode = line[1].rstrip()
+        print(name, barcode)
+        for i in range(len(r2)):
+            read = r2[i].seq
+            if read[:len(barcode)] == barcode:
                 r1_out.append(r1[i])
                 r2_out.append(r2[i])
         print(str(name) +": "+ str(len(r1_out)))
