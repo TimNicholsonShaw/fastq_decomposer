@@ -4,12 +4,13 @@ import xlrd
 from Bio import SeqIO
 import gzip
 
+def r1Trim(r1, ranmerlen):
+    return r1[ranmerlen+2:]
 
-def r1Trim(r1, barcode):
-    return r1[len(barcode):]
+def r2Trim(r2, barcode):
+    return r2[len(barcode):]
 
-def r2Trim(r2, ranmerlen):
-    return r2[ranmerlen+2:]
+
 
 #####################################################################
 if __name__=="__main__":
@@ -19,7 +20,6 @@ if __name__=="__main__":
     -r2: read 2 location. Fastq format, can be gq compressed or not
     -o: Folder to output files into
     -t: Trim barcode and random-mer, requires -r
-    -r: 10 or 11 for length of random barcode
     """
 
     header = True  #default value
@@ -40,7 +40,7 @@ if __name__=="__main__":
 
     sheet = xlrd.open_workbook(manifestLoc).sheet_by_index(0)
     for i in range(header,sheet.nrows):
-        manifest.append([sheet.cell_value(i,0),sheet.cell_value(i,2).rstrip() + sheet.cell_value(i,3).rstrip()])
+        manifest.append([sheet.cell_value(i,0),sheet.cell_value(i,2).rstrip() + sheet.cell_value(i,3).rstrip(), int(sheet.cell_value(i,4))])
 
     r1 = list(SeqIO.parse(gzip.open(r1Loc,'rt'),'fastq'))
     r2= list(SeqIO.parse(gzip.open(r2Loc,'rt'),'fastq'))
@@ -50,15 +50,16 @@ if __name__=="__main__":
         r1_out = []
         r2_out = []
         name = line[0]
+        print(line)
         barcode = line[1].rstrip()
-        ranlen = int(line[4])
+        ranlen = line[2]
         print(name, barcode)
         for i in range(len(r2)):
             read = r2[i].seq
             if read[:len(barcode)] == barcode:
                 if trim:
-                    r1_out.append(r1Trim(r1[i], barcode))
-                    r2_out.append(r2Trim(r2[i], ranlen))
+                    r1_out.append(r1Trim(r1[i], ranlen))
+                    r2_out.append(r2Trim(r2[i], barcode))
                 else:
                     r1_out.append(r1[i])
                     r2_out.append(r2[i])
