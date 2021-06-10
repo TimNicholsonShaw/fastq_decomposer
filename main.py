@@ -35,12 +35,6 @@ if __name__=="__main__":
         if sys.argv[x] == "-x": ranlen = int(sys.argv[x+1])
         if sys.argv[x] == '-h': print(help);sys.exit()
 
-    try:
-        if trim and (ranlen != 10 or ranlen !=11):
-            raise("Must be 10 or 11")
-    except:
-        raise("You need to specify -r if you use trim")
-
 
     manifest = []
 
@@ -57,6 +51,7 @@ if __name__=="__main__":
         r2_out = []
         name = line[0]
         barcode = line[1].rstrip()
+        ranlen = int(line[4])
         print(name, barcode)
         for i in range(len(r2)):
             read = r2[i].seq
