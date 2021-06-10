@@ -10,8 +10,6 @@
 
 -t: optional, trim barcode and random-mer
 
--r: optional, length of random-mer 10 or 11
-
 You'll need to install biopython
 
 `pip install biopython`
