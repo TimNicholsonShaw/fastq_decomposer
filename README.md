@@ -8,3 +8,5 @@
 
 -H: optional, if your file doesn't have a header
 
+You'll need to install biopython
+`pip install biopython`
